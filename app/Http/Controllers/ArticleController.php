@@ -12,9 +12,11 @@ class ArticleController extends Controller
 
         return view('article.index',compact('articles'));
     }
-    public function show($slug){
+    public function show($title){
         // die($slug);
-        return view('article.single',['title'=>$slug]);
+        // return view('article.single',['title'=>$slug]);
+        $article= Article::where('title',$title)->first();
+        return view('article.single',compact('article'));
     }
     public function create(){
         return view('article.create');
@@ -27,15 +29,41 @@ class ArticleController extends Controller
         ]);
 
         // dd($request);
-        $article = new Article;
-        $article->title = $request->title;
-        $article->subject = $request->subject;
-        $article->save();
+        // $article = new Article;
+        // $article->title = $request->title;
+        // $article->subject = $request->subject;
+        // $article->save();
+        Article::create([
+            'title'=>$request->title,
+            'subject'=>$request->subject,
+        ]);
 
         return redirect('/artikel');
     }
+
     public function edit($id){
         $article = Article::find($id);
         return view('article.edit',compact('article'));
+    }
+
+    public function update(Request $request, $id){
+
+        Article::find($id)->update([
+            'title'=> $request->title,
+            'subject'=> $request->subject,
+        ]);
+
+        // $article = Article::find($id);
+        // $article->title = $request->title;
+        // $article->subject = $request->subject;
+        // $article->save();
+
+        return redirect('/artikel');
+    }
+    public function destroy($id){
+
+        // dd('hapus' . $id);
+        Article::find($id)->delete();
+        return redirect("/artikel");
     }
 }
